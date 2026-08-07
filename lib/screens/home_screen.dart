@@ -2,7 +2,10 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flowly/core/app_colors.dart';
 import 'package:flowly/cubit/board/board_cubit.dart';
 import 'package:flowly/cubit/board/board_state.dart';
+import 'package:flowly/cubit/task/tasks_cubit.dart';
 import 'package:flowly/cubit/username/username_cubit.dart';
+import 'package:flowly/models/board_model.dart';
+import 'package:flowly/models/task_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -99,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         name: board.name,
                         color: board.color,
                         icon: board.icon,
+                        board: board,
                       ),
                     ),
                     ContainerNewBoard(),
@@ -112,7 +116,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Expanded(child: allItems[i]),
                           const SizedBox(width: 10),
-                          // fill second slot with empty space if only one item in row
                           isLast
                               ? const Expanded(child: SizedBox())
                               : Expanded(child: allItems[i + 1]),
@@ -138,61 +141,73 @@ class BoardContainer extends StatelessWidget {
   final String name;
   final Color color;
   final IconData icon;
+  final Board board;
 
   const BoardContainer({
     super.key,
+
     required this.name,
     required this.color,
     required this.icon,
+    required this.board,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 170,
-      height: 125,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.border),
-        color: color.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(10),
+    return GestureDetector(
+      onTap: () => context.push('/board', extra: board),
+      child: Container(
+        width: 170,
+        height: 125,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.border),
+          color: color.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: Colors.white, size: 23),
             ),
-            child: Icon(icon, color: Colors.white, size: 18),
-          ),
 
-          const Spacer(),
+            const Spacer(),
 
-          Text(
-            name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+            Text(
+              name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
 
-          const SizedBox(height: 2),
+            const SizedBox(height: 2),
 
-          Text(
-            '0 tasks',
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.5),
-              fontSize: 12,
+            BlocBuilder<TasksCubit, List<TaskModel>>(
+              builder: (context, state) {
+                return Text(
+                  '${state.length} tasks',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.5),
+                    fontSize: 14,
+                    fontFamily: 'Kanit',
+                    fontWeight: FontWeight.w500,
+                  ),
+                );
+              },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

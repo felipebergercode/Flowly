@@ -1,10 +1,9 @@
 import 'package:flowly/core/app_colors.dart';
+import 'package:flowly/models/priority.dart';
 import 'package:flutter/material.dart';
 
-enum TaskPriority { low, medium, high }
-
 class PriorityContainers extends StatefulWidget {
-  final void Function(TaskPriority)? onChanged;
+  final void Function(Priority)? onChanged;
 
   const PriorityContainers({super.key, this.onChanged});
 
@@ -13,7 +12,7 @@ class PriorityContainers extends StatefulWidget {
 }
 
 class _PriorityContainersState extends State<PriorityContainers> {
-  TaskPriority _selected = TaskPriority.medium;
+  Priority _selected = Priority.medium;
 
   @override
   Widget build(BuildContext context) {
@@ -35,30 +34,30 @@ class _PriorityContainersState extends State<PriorityContainers> {
             _PriorityChip(
               label: 'Low',
               color: const Color(0xFF4CAF50),
-              isSelected: _selected == TaskPriority.low,
+              isSelected: _selected == Priority.low,
               onTap: () {
-                setState(() => _selected = TaskPriority.low);
-                widget.onChanged?.call(TaskPriority.low);
+                setState(() => _selected = Priority.low);
+                widget.onChanged?.call(Priority.low);
               },
             ),
             const SizedBox(width: 10),
             _PriorityChip(
               label: 'Medium',
               color: const Color(0xFFFF9800),
-              isSelected: _selected == TaskPriority.medium,
+              isSelected: _selected == Priority.medium,
               onTap: () {
-                setState(() => _selected = TaskPriority.medium);
-                widget.onChanged?.call(TaskPriority.medium);
+                setState(() => _selected = Priority.medium);
+                widget.onChanged?.call(Priority.medium);
               },
             ),
             const SizedBox(width: 10),
             _PriorityChip(
               label: 'High',
               color: const Color(0xFFF44336),
-              isSelected: _selected == TaskPriority.high,
+              isSelected: _selected == Priority.high,
               onTap: () {
-                setState(() => _selected = TaskPriority.high);
-                widget.onChanged?.call(TaskPriority.high);
+                setState(() => _selected = Priority.high);
+                widget.onChanged?.call(Priority.high);
               },
             ),
           ],

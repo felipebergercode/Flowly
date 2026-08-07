@@ -1,3 +1,5 @@
+import 'package:flowly/models/board_model.dart';
+import 'package:flowly/screens/board_screen.dart';
 import 'package:flowly/screens/create_board_screen.dart';
 import 'package:flowly/screens/create_task_screen.dart';
 import 'package:flowly/screens/home_screen.dart';
@@ -22,5 +24,13 @@ final GoRouter router = GoRouter(
       builder: (context, state) => CreateBoardScreen(),
     ),
     GoRoute(path: '/addTask', builder: (context, state) => CreateTaskScreen()),
+    GoRoute(
+      path: '/board',
+      builder: (context, state) {
+        final board = state.extra as Board;
+
+        return BoardScreen(board: board);
+      },
+    ),
   ],
 );

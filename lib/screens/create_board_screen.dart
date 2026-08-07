@@ -18,13 +18,13 @@ class _CreateBoardScreenState extends State<CreateBoardScreen> {
   int selectedColorIndex = 0;
 
   final List<Color> boardColors = [
-    const Color(0xFF7047EB),
-    const Color(0xFF438CF6),
-    const Color(0xFF28B463),
-    const Color(0xFFFFAC38),
-    const Color(0xFFFF8A48),
-    const Color(0xFFF05A67),
-    const Color(0xFF252936),
+    Color(0xFF7C5CFC), // Purple
+    Color(0xFF3B82F6), // Blue
+    Color(0xFF22D3EE), // Cyan
+    Color(0xFF22C55E), // Green
+    Color(0xFFF59E0B), // Orange
+    Color(0xFFF43F5E), // Coral
+    const Color(0xFFA855F7),
   ];
 
   @override
@@ -269,6 +269,8 @@ class _CreateBoardScreenState extends State<CreateBoardScreen> {
                       }
 
                       final board = Board(
+                        id: DateTime.now().millisecondsSinceEpoch.toString(),
+
                         name: boardName,
                         color: selectedColor,
                         icon: selectedIcon,
@@ -305,12 +307,13 @@ class _CreateBoardScreenState extends State<CreateBoardScreen> {
 
   Color _getDotColor(int index) {
     final colors = [
-      const Color(0xFF5A7DF0),
-      const Color(0xFF3859BE),
-      const Color(0xFF40A79E),
-      const Color(0xFFE36943),
-      const Color(0xFF43B9BB),
-      const Color(0xFFE54749),
+      Color(0xFF7C5CFC), // Purple
+      Color(0xFF3B82F6), // Blue
+      Color(0xFF22D3EE), // Cyan
+      Color(0xFF22C55E), // Green
+      Color(0xFFF59E0B), // Orange
+      Color(0xFFF43F5E), // Coral
+      const Color(0xFFA855F7),
     ];
 
     if (index >= colors.length) {
