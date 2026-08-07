@@ -150,7 +150,7 @@ class RegisterScreen extends StatelessWidget {
               SizedBox(height: 30),
               TransaprentButton(
                 onPressed: () {
-                  context.pushReplacement('/home');
+                  context.pushReplacement('/name');
                 },
                 child: Container(
                   height: 50,
