@@ -6,6 +6,8 @@ import 'package:flowly/cubit/task/tasks_cubit.dart';
 import 'package:flowly/cubit/username/username_cubit.dart';
 import 'package:flowly/models/board_model.dart';
 import 'package:flowly/models/task_model.dart';
+import 'package:flowly/screens/calendar_screen.dart';
+import 'package:flowly/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -24,15 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final List<Widget> screens = [
       const HomeContent(),
-      const Center(
-        child: Text('Home', style: TextStyle(color: Colors.white)),
-      ),
-      const Center(
-        child: Text('Calendar', style: TextStyle(color: Colors.white)),
-      ),
-      const Center(
-        child: Text('Profile', style: TextStyle(color: Colors.white)),
-      ),
+      //Calendar Screen
+      const CalendarScreen(),
+      //Profile Screen
+      const ProfileScreen(),
     ];
 
     return Scaffold(

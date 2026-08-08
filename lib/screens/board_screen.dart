@@ -20,9 +20,7 @@ class BoardScreen extends StatefulWidget {
 class _BoardScreenState extends State<BoardScreen> {
   bool _isDragging = false;
 
-  // =====================================================
   // DRAG TARGET
-  // =====================================================
 
   Widget _buildDropTarget(
     BuildContext context, {
@@ -32,12 +30,10 @@ class _BoardScreenState extends State<BoardScreen> {
     required TaskStatus status,
   }) {
     return DragTarget<TaskModel>(
-      // NO DEJA SOLTAR UNA TASK EN EL MISMO STATUS QUE YA TIENE
       onWillAcceptWithDetails: (details) {
         return details.data.status != status;
       },
 
-      // CUANDO SOLTAMOS LA TASK
       onAcceptWithDetails: (details) {
         final task = details.data;
 
@@ -49,7 +45,6 @@ class _BoardScreenState extends State<BoardScreen> {
       },
 
       builder: (context, candidateData, rejectedData) {
-        // SI HAY UNA TASK ARRIBA DE ESTE TARGET
         final isHovering = candidateData.isNotEmpty;
 
         return AnimatedContainer(
@@ -113,9 +108,7 @@ class _BoardScreenState extends State<BoardScreen> {
           ),
           child: Column(
             children: [
-              // =====================================================
               // TOP BAR
-              // =====================================================
               Row(
                 children: [
                   GestureDetector(
@@ -170,9 +163,6 @@ class _BoardScreenState extends State<BoardScreen> {
 
               const SizedBox(height: 18),
 
-              // =====================================================
-              // BOARD HEADER
-              // =====================================================
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(18),
@@ -251,21 +241,14 @@ class _BoardScreenState extends State<BoardScreen> {
                           ),
 
                           const SizedBox(height: 10),
-
                           Row(
                             children: [
                               const _StatusDot(color: Colors.orange),
-
                               const SizedBox(width: 5),
-
                               const _StatusDot(color: Colors.blue),
-
                               const SizedBox(width: 5),
-
                               const _StatusDot(color: Colors.green),
-
                               const SizedBox(width: 8),
-
                               Text(
                                 'To Do  •  Progress  •  Done',
                                 style: TextStyle(
@@ -284,16 +267,10 @@ class _BoardScreenState extends State<BoardScreen> {
 
               const SizedBox(height: 22),
 
-              // =====================================================
               // PAGE VIEW
-              // =====================================================
               Expanded(
                 child: BlocBuilder<TasksCubit, List<TaskModel>>(
                   builder: (context, tasks) {
-                    // -------------------------
-                    // TO DO TASKS
-                    // -------------------------
-
                     final todoTasks = tasks
                         .where(
                           (task) =>
@@ -302,10 +279,6 @@ class _BoardScreenState extends State<BoardScreen> {
                         )
                         .toList();
 
-                    // -------------------------
-                    // IN PROGRESS TASKS
-                    // -------------------------
-
                     final inProgressTasks = tasks
                         .where(
                           (task) =>
@@ -313,10 +286,6 @@ class _BoardScreenState extends State<BoardScreen> {
                               task.status == TaskStatus.inProgress,
                         )
                         .toList();
-
-                    // -------------------------
-                    // DONE TASKS
-                    // -------------------------
 
                     final doneTasks = tasks
                         .where(
@@ -387,18 +356,12 @@ class _BoardScreenState extends State<BoardScreen> {
                 ),
               ),
 
-              // =====================================================
-              // DROP TARGETS
-              // SOLO APARECEN CUANDO ARRASTRAMOS UNA TASK
-              // =====================================================
+              //drag
               if (_isDragging) ...[
                 const SizedBox(height: 12),
 
                 Row(
                   children: [
-                    // -------------------------
-                    // TO DO
-                    // -------------------------
                     Expanded(
                       child: _buildDropTarget(
                         context,
@@ -411,9 +374,6 @@ class _BoardScreenState extends State<BoardScreen> {
 
                     const SizedBox(width: 8),
 
-                    // -------------------------
-                    // IN PROGRESS
-                    // -------------------------
                     Expanded(
                       child: _buildDropTarget(
                         context,
@@ -426,9 +386,6 @@ class _BoardScreenState extends State<BoardScreen> {
 
                     const SizedBox(width: 8),
 
-                    // -------------------------
-                    // DONE
-                    // -------------------------
                     Expanded(
                       child: _buildDropTarget(
                         context,
