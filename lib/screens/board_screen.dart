@@ -8,10 +8,96 @@ import 'package:flowly/models/task_status.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class BoardScreen extends StatelessWidget {
+class BoardScreen extends StatefulWidget {
   final Board board;
 
   const BoardScreen({super.key, required this.board});
+
+  @override
+  State<BoardScreen> createState() => _BoardScreenState();
+}
+
+class _BoardScreenState extends State<BoardScreen> {
+  bool _isDragging = false;
+
+  // =====================================================
+  // DRAG TARGET
+  // =====================================================
+
+  Widget _buildDropTarget(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required Color color,
+    required TaskStatus status,
+  }) {
+    return DragTarget<TaskModel>(
+      // NO DEJA SOLTAR UNA TASK EN EL MISMO STATUS QUE YA TIENE
+      onWillAcceptWithDetails: (details) {
+        return details.data.status != status;
+      },
+
+      // CUANDO SOLTAMOS LA TASK
+      onAcceptWithDetails: (details) {
+        final task = details.data;
+
+        context.read<TasksCubit>().changeTaskStatus(task.id, status);
+
+        setState(() {
+          _isDragging = false;
+        });
+      },
+
+      builder: (context, candidateData, rejectedData) {
+        // SI HAY UNA TASK ARRIBA DE ESTE TARGET
+        final isHovering = candidateData.isNotEmpty;
+
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          height: 68,
+          decoration: BoxDecoration(
+            color: isHovering ? color.withOpacity(0.22) : AppColors.card,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isHovering ? color : Colors.white.withOpacity(0.12),
+              width: isHovering ? 2 : 1,
+            ),
+            boxShadow: isHovering
+                ? [
+                    BoxShadow(
+                      color: color.withOpacity(0.25),
+                      blurRadius: 15,
+                      spreadRadius: 1,
+                    ),
+                  ]
+                : [],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: isHovering ? color : Colors.white.withOpacity(0.45),
+                size: 21,
+              ),
+
+              const SizedBox(height: 4),
+
+              Text(
+                title,
+                style: TextStyle(
+                  color: isHovering ? color : Colors.white.withOpacity(0.45),
+                  fontFamily: 'Kanit',
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +113,9 @@ class BoardScreen extends StatelessWidget {
           ),
           child: Column(
             children: [
-              // =========================
-              // FIXED TOP SECTION
-              // =========================
+              // =====================================================
+              // TOP BAR
+              // =====================================================
               Row(
                 children: [
                   GestureDetector(
@@ -62,14 +148,16 @@ class BoardScreen extends StatelessWidget {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: board.color.withOpacity(0.12),
+                      color: widget.board.color.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: board.color.withOpacity(0.35)),
+                      border: Border.all(
+                        color: widget.board.color.withOpacity(0.35),
+                      ),
                     ),
                     child: Text(
                       'BOARD',
                       style: TextStyle(
-                        color: board.color,
+                        color: widget.board.color,
                         fontSize: 11,
                         fontFamily: 'Kanit',
                         fontWeight: FontWeight.w600,
@@ -82,23 +170,28 @@ class BoardScreen extends StatelessWidget {
 
               const SizedBox(height: 18),
 
+              // =====================================================
+              // BOARD HEADER
+              // =====================================================
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(22),
-
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [board.color.withOpacity(0.25), AppColors.card],
+                    colors: [
+                      widget.board.color.withOpacity(0.25),
+                      AppColors.card,
+                    ],
                   ),
-
-                  border: Border.all(color: board.color.withOpacity(0.40)),
-
+                  border: Border.all(
+                    color: widget.board.color.withOpacity(0.40),
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: board.color.withOpacity(0.12),
+                      color: widget.board.color.withOpacity(0.12),
                       blurRadius: 25,
                       spreadRadius: 1,
                     ),
@@ -110,17 +203,21 @@ class BoardScreen extends StatelessWidget {
                       width: 65,
                       height: 65,
                       decoration: BoxDecoration(
-                        color: board.color,
+                        color: widget.board.color,
                         borderRadius: BorderRadius.circular(17),
                         boxShadow: [
                           BoxShadow(
-                            color: board.color.withOpacity(0.35),
+                            color: widget.board.color.withOpacity(0.35),
                             blurRadius: 18,
                             spreadRadius: 1,
                           ),
                         ],
                       ),
-                      child: Icon(board.icon, color: Colors.white, size: 32),
+                      child: Icon(
+                        widget.board.icon,
+                        color: Colors.white,
+                        size: 32,
+                      ),
                     ),
 
                     const SizedBox(width: 16),
@@ -130,7 +227,7 @@ class BoardScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            board.name,
+                            widget.board.name,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
@@ -144,7 +241,7 @@ class BoardScreen extends StatelessWidget {
                           const SizedBox(height: 3),
 
                           Text(
-                            'Manage your workflow',
+                            'Hold tight to move',
                             style: TextStyle(
                               fontSize: 13,
                               fontFamily: 'Kanit',
@@ -157,15 +254,15 @@ class BoardScreen extends StatelessWidget {
 
                           Row(
                             children: [
-                              _StatusDot(color: Colors.orange),
+                              const _StatusDot(color: Colors.orange),
 
                               const SizedBox(width: 5),
 
-                              _StatusDot(color: Colors.blue),
+                              const _StatusDot(color: Colors.blue),
 
                               const SizedBox(width: 5),
 
-                              _StatusDot(color: Colors.green),
+                              const _StatusDot(color: Colors.green),
 
                               const SizedBox(width: 8),
 
@@ -187,32 +284,44 @@ class BoardScreen extends StatelessWidget {
 
               const SizedBox(height: 22),
 
-              // =========================
+              // =====================================================
               // PAGE VIEW
-              // =========================
+              // =====================================================
               Expanded(
                 child: BlocBuilder<TasksCubit, List<TaskModel>>(
                   builder: (context, tasks) {
+                    // -------------------------
+                    // TO DO TASKS
+                    // -------------------------
+
                     final todoTasks = tasks
                         .where(
                           (task) =>
-                              task.boardId == board.id &&
+                              task.boardId == widget.board.id &&
                               task.status == TaskStatus.todo,
                         )
                         .toList();
 
+                    // -------------------------
+                    // IN PROGRESS TASKS
+                    // -------------------------
+
                     final inProgressTasks = tasks
                         .where(
                           (task) =>
-                              task.boardId == board.id &&
+                              task.boardId == widget.board.id &&
                               task.status == TaskStatus.inProgress,
                         )
                         .toList();
 
+                    // -------------------------
+                    // DONE TASKS
+                    // -------------------------
+
                     final doneTasks = tasks
                         .where(
                           (task) =>
-                              task.boardId == board.id &&
+                              task.boardId == widget.board.id &&
                               task.status == TaskStatus.done,
                         )
                         .toList();
@@ -223,24 +332,115 @@ class BoardScreen extends StatelessWidget {
                           title: 'To Do',
                           color: Colors.orange,
                           tasks: todoTasks,
+
+                          onDragStarted: () {
+                            setState(() {
+                              _isDragging = true;
+                            });
+                          },
+
+                          onDragFinished: () {
+                            setState(() {
+                              _isDragging = false;
+                            });
+                          },
                         ),
 
                         _TasksPage(
                           title: 'In Progress',
                           color: Colors.blue,
                           tasks: inProgressTasks,
+
+                          onDragStarted: () {
+                            setState(() {
+                              _isDragging = true;
+                            });
+                          },
+
+                          onDragFinished: () {
+                            setState(() {
+                              _isDragging = false;
+                            });
+                          },
                         ),
 
                         _TasksPage(
                           title: 'Done',
                           color: Colors.green,
                           tasks: doneTasks,
+
+                          onDragStarted: () {
+                            setState(() {
+                              _isDragging = true;
+                            });
+                          },
+
+                          onDragFinished: () {
+                            setState(() {
+                              _isDragging = false;
+                            });
+                          },
                         ),
                       ],
                     );
                   },
                 ),
               ),
+
+              // =====================================================
+              // DROP TARGETS
+              // SOLO APARECEN CUANDO ARRASTRAMOS UNA TASK
+              // =====================================================
+              if (_isDragging) ...[
+                const SizedBox(height: 12),
+
+                Row(
+                  children: [
+                    // -------------------------
+                    // TO DO
+                    // -------------------------
+                    Expanded(
+                      child: _buildDropTarget(
+                        context,
+                        title: 'TO DO',
+                        icon: Icons.list_alt_rounded,
+                        color: Colors.orange,
+                        status: TaskStatus.todo,
+                      ),
+                    ),
+
+                    const SizedBox(width: 8),
+
+                    // -------------------------
+                    // IN PROGRESS
+                    // -------------------------
+                    Expanded(
+                      child: _buildDropTarget(
+                        context,
+                        title: 'PROGRESS',
+                        icon: Icons.timelapse_rounded,
+                        color: Colors.blue,
+                        status: TaskStatus.inProgress,
+                      ),
+                    ),
+
+                    const SizedBox(width: 8),
+
+                    // -------------------------
+                    // DONE
+                    // -------------------------
+                    Expanded(
+                      child: _buildDropTarget(
+                        context,
+                        title: 'DONE',
+                        icon: Icons.check_rounded,
+                        color: Colors.green,
+                        status: TaskStatus.done,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),
@@ -249,9 +449,9 @@ class BoardScreen extends StatelessWidget {
   }
 }
 
-// =========================
-// SMALL STATUS DOT
-// =========================
+// =====================================================
+// STATUS DOT
+// =====================================================
 
 class _StatusDot extends StatelessWidget {
   final Color color;
@@ -268,20 +468,29 @@ class _StatusDot extends StatelessWidget {
   }
 }
 
-// =========================
-// TASK PAGE
-// =========================
+// =====================================================
+// TASKS PAGE
+// =====================================================
 
 class _TasksPage extends StatelessWidget {
   final String title;
   final Color color;
   final List<TaskModel> tasks;
 
+  final VoidCallback onDragStarted;
+  final VoidCallback onDragFinished;
+
   const _TasksPage({
     required this.title,
     required this.color,
     required this.tasks,
+    required this.onDragStarted,
+    required this.onDragFinished,
   });
+
+  // =====================================================
+  // PRIORITY COLOR
+  // =====================================================
 
   Color _getPriorityColor(Priority priority) {
     switch (priority) {
@@ -295,6 +504,88 @@ class _TasksPage extends StatelessWidget {
         return const Color(0xFFF44336);
     }
   }
+
+  // =====================================================
+  // REUSABLE TASK CARD
+  // =====================================================
+
+  Widget _buildTaskCard(TaskModel task, Color priorityColor) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        border: Border.all(color: priorityColor),
+        color: AppColors.card,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // -------------------------
+          // TITLE
+          // -------------------------
+          Text(
+            task.title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 19,
+              fontWeight: FontWeight.w500,
+              fontFamily: 'Kanit',
+            ),
+          ),
+
+          // -------------------------
+          // DESCRIPTION
+          // -------------------------
+          if (task.description.isNotEmpty) ...[
+            const SizedBox(height: 10),
+
+            Text(
+              task.description,
+              style: const TextStyle(color: Colors.white54, fontSize: 13),
+            ),
+          ],
+
+          const SizedBox(height: 12),
+
+          // -------------------------
+          // PRIORITY + DATE
+          // -------------------------
+          Row(
+            children: [
+              Text(
+                task.priority.name.toUpperCase(),
+                style: TextStyle(
+                  color: priorityColor,
+                  fontFamily: 'Kanit',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+
+              const Spacer(),
+
+              const Icon(
+                Icons.calendar_month_outlined,
+                color: Colors.white38,
+                size: 15,
+              ),
+
+              const SizedBox(width: 5),
+
+              Text(
+                DateFormat('MMM d').format(task.dueDate),
+                style: const TextStyle(color: Colors.white54),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // =====================================================
+  // BUILD
+  // =====================================================
 
   @override
   Widget build(BuildContext context) {
@@ -311,6 +602,9 @@ class _TasksPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // =====================================================
+            // PAGE HEADER
+            // =====================================================
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -345,79 +639,132 @@ class _TasksPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
+            // =====================================================
+            // EMPTY
+            // =====================================================
             if (tasks.isEmpty)
-              Center(
-                child: Text(
-                  'No tasks yet',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.4),
-                    fontSize: 14,
+              Expanded(
+                child: Center(
+                  child: Text(
+                    'No tasks yet',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.4),
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               )
+            // =====================================================
+            // TASK LIST
+            // =====================================================
             else
               Expanded(
                 child: ListView.builder(
                   itemCount: tasks.length,
+
                   itemBuilder: (context, index) {
-                    final task = tasks[index];
+                    final TaskModel task = tasks[index];
 
                     final priorityColor = _getPriorityColor(task.priority);
 
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: priorityColor),
-                        color: AppColors.card,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            task.title,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 19,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Kanit',
-                            ),
-                          ),
+                    // =====================================================
+                    // LONG PRESS DRAGGABLE
+                    // =====================================================
 
-                          const SizedBox(height: 10),
+                    return LongPressDraggable<TaskModel>(
+                      // TASK QUE ESTAMOS ARRASTRANDO
+                      data: task,
 
-                          Text(
-                            task.description,
-                            style: const TextStyle(
-                              color: Colors.white54,
-                              fontSize: 13,
-                            ),
-                          ),
+                      // VIBRACION CUANDO EMPIEZA
+                      hapticFeedbackOnStart: true,
 
-                          const SizedBox(height: 12),
+                      // AVISAMOS A BOARD SCREEN
+                      onDragStarted: onDragStarted,
 
-                          Row(
-                            children: [
-                              Text(
-                                task.priority.name.toUpperCase(),
-                                style: TextStyle(
-                                  color: priorityColor,
-                                  fontFamily: 'Kanit',
-                                  fontWeight: FontWeight.w500,
+                      // CUANDO TERMINA EL DRAG
+                      onDragEnd: (_) {
+                        onDragFinished();
+                      },
+
+                      // =====================================================
+                      // CARD QUE SIGUE EL DEDO
+                      // =====================================================
+                      feedback: Material(
+                        color: Colors.transparent,
+                        child: SizedBox(
+                          width: 300,
+                          child: Container(
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: AppColors.card,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: priorityColor,
+                                width: 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: priorityColor.withOpacity(0.30),
+                                  blurRadius: 20,
+                                  spreadRadius: 2,
                                 ),
-                              ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  task.title,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Kanit',
+                                  ),
+                                ),
 
-                              const Spacer(),
+                                const SizedBox(height: 10),
 
-                              Text(
-                                DateFormat('MMM d').format(task.dueDate),
-                                style: const TextStyle(color: Colors.white54),
-                              ),
-                            ],
+                                Row(
+                                  children: [
+                                    Text(
+                                      task.priority.name.toUpperCase(),
+                                      style: TextStyle(
+                                        color: priorityColor,
+                                        fontFamily: 'Kanit',
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+
+                                    const Spacer(),
+
+                                    Text(
+                                      DateFormat('MMM d').format(task.dueDate),
+                                      style: const TextStyle(
+                                        color: Colors.white54,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
+                        ),
                       ),
+
+                      // =====================================================
+                      // CARD ORIGINAL MIENTRAS ARRASTRAMOS
+                      // =====================================================
+                      childWhenDragging: Opacity(
+                        opacity: 0.20,
+                        child: _buildTaskCard(task, priorityColor),
+                      ),
+
+                      // =====================================================
+                      // CARD NORMAL
+                      // =====================================================
+                      child: _buildTaskCard(task, priorityColor),
                     );
                   },
                 ),

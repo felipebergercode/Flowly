@@ -97,7 +97,7 @@ class WelcomeScreen extends StatelessWidget {
                   const Spacer(),
                   TransaprentButton(
                     onPressed: () {
-                      context.push('/login');
+                      context.pushReplacement('/login');
                     },
                     child: Container(
                       height: 52,

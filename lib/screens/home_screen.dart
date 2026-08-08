@@ -18,9 +18,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
+    final List<Widget> screens = [
+      const HomeContent(),
+      const Center(
+        child: Text('Home', style: TextStyle(color: Colors.white)),
+      ),
+      const Center(
+        child: Text('Calendar', style: TextStyle(color: Colors.white)),
+      ),
+      const Center(
+        child: Text('Profile', style: TextStyle(color: Colors.white)),
+      ),
+    ];
+
     return Scaffold(
+      backgroundColor: AppColors.background,
+
+      // ADD TASK BUTTON
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           context.push('/addTask');
@@ -29,18 +47,83 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         child: const Icon(Icons.add, color: Colors.white),
       ),
-      backgroundColor: AppColors.background,
-      body: SingleChildScrollView(
+
+      // SCREENS
+      body: IndexedStack(index: _currentIndex, children: screens),
+
+      // BOTTOM NAVIGATION
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const TextStyle(
+                color: AppColors.buttonPrimary,
+                fontWeight: FontWeight.w600,
+              );
+            }
+
+            return const TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.w400,
+            );
+          }),
+        ),
+        child: NavigationBar(
+          backgroundColor: AppColors.background,
+          indicatorColor: Colors.transparent,
+          height: 60,
+          selectedIndex: _currentIndex,
+          onDestinationSelected: (int index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          destinations: const [
+            NavigationDestination(
+              icon: Icon(Icons.home_outlined),
+              selectedIcon: Icon(Icons.home, color: AppColors.buttonPrimary),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.calendar_month_outlined),
+              selectedIcon: Icon(
+                Icons.calendar_month,
+                color: AppColors.buttonPrimary,
+              ),
+              label: 'Calendar',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.person_outline),
+              selectedIcon: Icon(Icons.person, color: AppColors.buttonPrimary),
+              label: 'Profile',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// HOME CONTENT
+
+class HomeContent extends StatelessWidget {
+  const HomeContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(
-            top: 100,
+            top: 30,
             right: 10,
             left: 10,
-            bottom: 50,
+            bottom: 100,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Ggood morning
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -48,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (context, state) {
                       return Text(
                         'Good morning, ${state.userName} 👋',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontFamily: 'Kanit',
                           fontSize: 23,
@@ -57,6 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                   ),
+
                   Container(
                     decoration: BoxDecoration(
                       color: const Color(0xFF0D0D0D),
@@ -64,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: IconButton(
                       onPressed: () {},
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.notifications_outlined,
                         color: Colors.white,
                         size: 25,
@@ -73,6 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
+
               Text(
                 'Here\'s what\'s happening today.',
                 style: TextStyle(
@@ -82,8 +167,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: AppColors.textSecondary,
                 ),
               ),
-              SizedBox(height: 30),
-              Text(
+
+              const SizedBox(height: 30),
+
+              const Text(
                 'Your boards',
                 style: TextStyle(
                   fontFamily: 'Kanit',
@@ -92,11 +179,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.white,
                 ),
               ),
+
               const SizedBox(height: 20),
 
+              // BOARDS
               BlocBuilder<BoardsCubit, BoardsState>(
                 builder: (context, state) {
-                  final allItems = [
+                  final List<Widget> allItems = [
                     ...state.boards.map(
                       (board) => BoardContainer(
                         name: board.name,
@@ -105,25 +194,31 @@ class _HomeScreenState extends State<HomeScreen> {
                         board: board,
                       ),
                     ),
-                    ContainerNewBoard(),
+                    const ContainerNewBoard(),
                   ];
 
-                  final rows = <Widget>[];
+                  final List<Widget> rows = [];
+
                   for (int i = 0; i < allItems.length; i += 2) {
-                    final isLast = i + 1 >= allItems.length;
+                    final bool isLast = i + 1 >= allItems.length;
+
                     rows.add(
                       Row(
                         children: [
                           Expanded(child: allItems[i]),
+
                           const SizedBox(width: 10),
+
                           isLast
                               ? const Expanded(child: SizedBox())
                               : Expanded(child: allItems[i + 1]),
                         ],
                       ),
                     );
-                    if (i + 2 < allItems.length)
+
+                    if (i + 2 < allItems.length) {
                       rows.add(const SizedBox(height: 10));
+                    }
                   }
 
                   return Column(children: rows);
@@ -137,6 +232,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+// BOARD CONTAINER
+
 class BoardContainer extends StatelessWidget {
   final String name;
   final Color color;
@@ -145,7 +242,6 @@ class BoardContainer extends StatelessWidget {
 
   const BoardContainer({
     super.key,
-
     required this.name,
     required this.color,
     required this.icon,
@@ -155,7 +251,9 @@ class BoardContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.push('/board', extra: board),
+      onTap: () {
+        context.push('/board', extra: board);
+      },
       child: Container(
         width: 170,
         height: 125,
@@ -213,7 +311,11 @@ class BoardContainer extends StatelessWidget {
   }
 }
 
+// NEW BOARD CONTAINER
+
 class ContainerNewBoard extends StatelessWidget {
+  const ContainerNewBoard({super.key});
+
   @override
   Widget build(BuildContext context) {
     return DottedBorder(
@@ -224,7 +326,9 @@ class ContainerNewBoard extends StatelessWidget {
         radius: const Radius.circular(18),
       ),
       child: GestureDetector(
-        onTap: () => context.push('/createBoard'),
+        onTap: () {
+          context.push('/createBoard');
+        },
         child: Container(
           width: double.infinity,
           height: 125,
@@ -239,7 +343,7 @@ class ContainerNewBoard extends StatelessWidget {
                 Icon(Icons.add, color: Colors.white, size: 18),
                 SizedBox(width: 8),
                 Text(
-                  "New Board",
+                  'New Board',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
