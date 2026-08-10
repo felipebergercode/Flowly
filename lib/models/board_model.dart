@@ -12,4 +12,23 @@ class Board {
     required this.color,
     required this.icon,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'color': color.toARGB32(),
+      'iconCodePoint': icon.codePoint,
+      'iconFontFamily': icon.fontFamily,
+    };
+  }
+
+  factory Board.fromJson(Map<String, dynamic> json) {
+    return Board(
+      id: json['id'],
+      name: json['name'],
+      color: Color(json['color']),
+      icon: IconData(json['iconCodePoint'], fontFamily: json['iconFontFamily']),
+    );
+  }
 }

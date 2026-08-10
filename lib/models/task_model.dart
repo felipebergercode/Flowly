@@ -39,4 +39,28 @@ class TaskModel {
       status: status ?? this.status,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'boardId': boardId,
+      'priority': priority.name,
+      'dueDate': dueDate.toIso8601String(),
+      'status': status.name,
+    };
+  }
+
+  factory TaskModel.fromJson(Map<String, dynamic> json) {
+    return TaskModel(
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
+      boardId: json['boardId'],
+      priority: Priority.values.byName(json['priority']),
+      dueDate: DateTime.parse(json['dueDate']),
+      status: TaskStatus.values.byName(json['status']),
+    );
+  }
 }

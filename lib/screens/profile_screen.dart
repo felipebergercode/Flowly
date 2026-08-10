@@ -56,7 +56,7 @@ class ProfileScreen extends StatelessWidget {
                   builder: (context, state) {
                     return Column(
                       children: [
-                        if (state.userName != null && state.userName.isNotEmpty)
+                        if (state.userName.isNotEmpty)
                           Container(
                             width: 85,
                             height: 85,
@@ -85,10 +85,36 @@ class ProfileScreen extends StatelessWidget {
                             ),
                           )
                         else
-                          Text(''),
+                          Container(
+                            width: 85,
+                            height: 85,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primary.withOpacity(0.25),
+                                  blurRadius: 20,
+                                  spreadRadius: 2,
+                                ),
+                              ],
+                            ),
+
+                            child: Center(
+                              child: Text(
+                                'A',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'Kanit',
+                                ),
+                              ),
+                            ),
+                          ),
 
                         const SizedBox(height: 18),
-                        if (state.userName != null && state.userName.isNotEmpty)
+                        if (state.userName.isNotEmpty)
                           Text(
                             state.userName,
                             style: TextStyle(

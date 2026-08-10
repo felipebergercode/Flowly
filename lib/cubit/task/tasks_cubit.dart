@@ -1,13 +1,12 @@
 import 'package:flowly/models/task_model.dart';
 import 'package:flowly/models/task_status.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-class TasksCubit extends Cubit<List<TaskModel>> {
+class TasksCubit extends HydratedCubit<List<TaskModel>> {
   TasksCubit() : super([]);
 
   void addTask(TaskModel task) {
     emit([...state, task]);
-    print('Cantidad de tasks: ${state.length}');
   }
 
   void changeTaskStatus(String taskId, TaskStatus newStatus) {
@@ -20,5 +19,17 @@ class TasksCubit extends Cubit<List<TaskModel>> {
     }).toList();
 
     emit(updatedTasks);
+  }
+
+  @override
+  Map<String, dynamic> toJson(List<TaskModel> state) {
+    return {'tasks': state.map((task) => task.toJson()).toList()};
+  }
+
+  @override
+  List<TaskModel> fromJson(Map<String, dynamic> json) {
+    final tasks = json['tasks'] as List;
+
+    return tasks.map((task) => TaskModel.fromJson(task)).toList();
   }
 }
