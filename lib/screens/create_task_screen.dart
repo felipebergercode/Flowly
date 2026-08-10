@@ -29,6 +29,11 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   bool _dateError = false;
   bool _titleError = false;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void _pickBoard(List<Board> boards) {
     if (boards.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(

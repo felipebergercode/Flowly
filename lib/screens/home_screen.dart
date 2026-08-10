@@ -36,13 +36,21 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: AppColors.background,
 
       // ADD TASK BUTTON
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.push('/addTask');
+      floatingActionButton: BlocBuilder<BoardsCubit, BoardsState>(
+        builder: (context, state) {
+          if (state.boards.isEmpty) {
+            return const SizedBox.shrink();
+          }
+
+          return FloatingActionButton(
+            onPressed: () {
+              context.push('/addTask');
+            },
+            backgroundColor: AppColors.buttonPrimary,
+            elevation: 0,
+            child: const Icon(Icons.add, color: Colors.white),
+          );
         },
-        backgroundColor: AppColors.buttonPrimary,
-        elevation: 0,
-        child: const Icon(Icons.add, color: Colors.white),
       ),
 
       // SCREENS
@@ -182,43 +190,237 @@ class HomeContent extends StatelessWidget {
               // BOARDS
               BlocBuilder<BoardsCubit, BoardsState>(
                 builder: (context, state) {
-                  final List<Widget> allItems = [
-                    ...state.boards.map(
-                      (board) => BoardContainer(
-                        name: board.name,
-                        color: board.color,
-                        icon: board.icon,
-                        board: board,
+                  if (state.boards.isNotEmpty) {
+                    final List<Widget> allItems = [
+                      ...state.boards.map(
+                        (board) => BoardContainer(
+                          name: board.name,
+                          color: board.color,
+                          icon: board.icon,
+                          board: board,
+                        ),
                       ),
-                    ),
-                    const ContainerNewBoard(),
-                  ];
+                      const ContainerNewBoard(),
+                    ];
 
-                  final List<Widget> rows = [];
+                    final List<Widget> rows = [];
 
-                  for (int i = 0; i < allItems.length; i += 2) {
-                    final bool isLast = i + 1 >= allItems.length;
+                    for (int i = 0; i < allItems.length; i += 2) {
+                      final bool isLast = i + 1 >= allItems.length;
 
-                    rows.add(
-                      Row(
+                      rows.add(
+                        Row(
+                          children: [
+                            Expanded(child: allItems[i]),
+                            const SizedBox(width: 10),
+                            isLast
+                                ? const Expanded(child: SizedBox())
+                                : Expanded(child: allItems[i + 1]),
+                          ],
+                        ),
+                      );
+
+                      if (i + 2 < allItems.length) {
+                        rows.add(const SizedBox(height: 10));
+                      }
+                    }
+
+                    return Column(children: rows);
+                  }
+
+                  return const SizedBox.shrink();
+                },
+              ),
+              BlocBuilder<BoardsCubit, BoardsState>(
+                builder: (context, state) {
+                  if (state.boards.isEmpty) {
+                    return GestureDetector(
+                      onTap: () => context.push('/createBoard'),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: AppColors.buttonSecondary,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: AppColors.primary,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.add,
+                                color: AppColors.primary,
+                                size: 28,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            const Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Create your first board',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'Kanit',
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    'Tap here to start organizing your tasks',
+                                    style: TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 13,
+                                      fontFamily: 'Kanit',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            const Icon(
+                              Icons.arrow_forward_ios,
+                              color: AppColors.textSecondary,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
+                  return const SizedBox.shrink();
+                },
+              ),
+              SizedBox(height: 30),
+              BlocBuilder<BoardsCubit, BoardsState>(
+                builder: (context, state) {
+                  if (state.boards.isEmpty) {
+                    return Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: AppColors.buttonSecondary,
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(
+                          color: AppColors.primary.withOpacity(0.35),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(child: allItems[i]),
-
-                          const SizedBox(width: 10),
-
-                          isLast
-                              ? const Expanded(child: SizedBox())
-                              : Expanded(child: allItems[i + 1]),
+                          Container(
+                            height: 48,
+                            width: 48,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.auto_awesome,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          const Text(
+                            'Turn your ideas into progress',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Kanit',
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Flowly helps you organize your projects, manage your tasks and keep track of what needs to be done.',
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 14,
+                              height: 1.5,
+                              fontFamily: 'Kanit',
+                            ),
+                          ),
+                          const SizedBox(height: 22),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.check_circle_outline,
+                                color: AppColors.primary,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                              const Expanded(
+                                child: Text(
+                                  'Stay organized and focused every day',
+                                  style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 13,
+                                    fontFamily: 'Kanit',
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.check_circle_outline,
+                                color: AppColors.primary,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                              const Expanded(
+                                child: Text(
+                                  'Keep every task in one clear place',
+                                  style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 13,
+                                    fontFamily: 'Kanit',
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.check_circle_outline,
+                                color: AppColors.primary,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                              const Expanded(
+                                child: Text(
+                                  'See what needs your attention next',
+                                  style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 13,
+                                    fontFamily: 'Kanit',
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     );
-
-                    if (i + 2 < allItems.length) {
-                      rows.add(const SizedBox(height: 10));
-                    }
                   }
-
-                  return Column(children: rows);
+                  return const SizedBox.shrink();
                 },
               ),
             ],

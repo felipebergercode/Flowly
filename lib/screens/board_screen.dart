@@ -1,6 +1,5 @@
 import 'package:flowly/core/app_colors.dart';
 import 'package:flowly/cubit/board/board_cubit.dart';
-import 'package:flowly/cubit/board/board_state.dart';
 import 'package:flowly/models/board_model.dart';
 import 'package:flowly/models/priority.dart';
 import 'package:flutter/material.dart';
@@ -511,11 +510,30 @@ class _TasksPage extends StatelessWidget {
               ),
               BlocBuilder<TasksCubit, List<TaskModel>>(
                 builder: (context, state) {
-                  return GestureDetector(
-                    onTap: () {
-                      context.read<TasksCubit>().deleteTask(task.id);
-                    },
-                    child: Icon(Icons.delete, size: 22, color: Colors.white24),
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          context.push('/addTask');
+                        },
+                        child: Icon(
+                          Icons.edit,
+                          size: 22,
+                          color: Colors.white24,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          context.read<TasksCubit>().deleteTask(task.id);
+                        },
+                        child: Icon(
+                          Icons.delete,
+                          size: 22,
+                          color: Colors.white24,
+                        ),
+                      ),
+                    ],
                   );
                 },
               ),
@@ -600,27 +618,38 @@ class _TasksPage extends StatelessWidget {
                   title,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
+                    fontSize: 21,
                     fontWeight: FontWeight.w600,
+                    fontFamily: 'Kanit',
                   ),
                 ),
 
-                Container(
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.15),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Text(
-                      '${tasks.length}',
-                      style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.w600,
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => context.push('/addTask'),
+
+                      child: Icon(Icons.add, color: Colors.white70),
+                    ),
+                    SizedBox(width: 10),
+                    Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${tasks.length}',
+                          style: TextStyle(
+                            color: color,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),
