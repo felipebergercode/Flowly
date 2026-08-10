@@ -1,4 +1,5 @@
 import 'package:flowly/core/app_colors.dart';
+import 'package:flowly/core/text_styles.dart';
 import 'package:flowly/widgets/social_login_section.dart';
 import 'package:flowly/widgets/transaprent_button.dart';
 import 'package:flutter/material.dart';
@@ -36,15 +37,7 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 33),
-              Text(
-                'Email',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontFamily: 'Kanit',
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white,
-                ),
-              ),
+              Text('Email', style: TextStyles.LoginRegisterStyle),
               SizedBox(height: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,15 +65,7 @@ class LoginScreen extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 33),
-              Text(
-                'Password',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontFamily: 'Kanit',
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white,
-                ),
-              ),
+              Text('Password', style: TextStyles.LoginRegisterStyle),
               SizedBox(height: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
