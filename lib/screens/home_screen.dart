@@ -290,8 +290,11 @@ class BoardContainer extends StatelessWidget {
 
             BlocBuilder<TasksCubit, List<TaskModel>>(
               builder: (context, state) {
+                final boardTasks = state.where((task) {
+                  return task.boardId == board.id;
+                }).toList();
                 return Text(
-                  '${state.length} tasks',
+                  '${boardTasks.length} tasks',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.5),
                     fontSize: 14,

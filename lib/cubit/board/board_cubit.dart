@@ -9,12 +9,6 @@ class BoardsCubit extends HydratedCubit<BoardsState> {
     emit(state.copyWith(boards: [...state.boards, board]));
   }
 
-  void removeBoard(Board board) {
-    final updatedBoards = List<Board>.from(state.boards)..remove(board);
-
-    emit(state.copyWith(boards: updatedBoards));
-  }
-
   void clearBoards() {
     emit(state.copyWith(boards: []));
   }
@@ -33,5 +27,13 @@ class BoardsCubit extends HydratedCubit<BoardsState> {
     }).toList();
 
     return BoardsState(boards: boards);
+  }
+
+  void deleteBoard(String boardId) {
+    final updatedBoards = state.boards.where((comparacionBoard) {
+      return comparacionBoard.id != boardId;
+    }).toList();
+
+    emit(state.copyWith(boards: updatedBoards));
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flowly/core/app_colors.dart';
+import 'package:flowly/cubit/board/board_cubit.dart';
+import 'package:flowly/cubit/board/board_state.dart';
 import 'package:flowly/models/board_model.dart';
 import 'package:flowly/models/priority.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:flowly/cubit/task/tasks_cubit.dart';
 import 'package:flowly/models/task_model.dart';
 import 'package:flowly/models/task_status.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class BoardScreen extends StatefulWidget {
@@ -261,6 +264,19 @@ class _BoardScreenState extends State<BoardScreen> {
                         ],
                       ),
                     ),
+                    IconButton(
+                      onPressed: () {
+                        context.read<TasksCubit>().deleteTaskFromBoard(
+                          widget.board.id,
+                        );
+                        context.read<BoardsCubit>().deleteBoard(
+                          widget.board.id,
+                        );
+
+                        context.pop();
+                      },
+                      icon: const Icon(Icons.delete),
+                    ),
                   ],
                 ),
               ),
@@ -481,14 +497,29 @@ class _TasksPage extends StatelessWidget {
           // -------------------------
           // TITLE
           // -------------------------
-          Text(
-            task.title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 19,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'Kanit',
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                task.title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 19,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Kanit',
+                ),
+              ),
+              BlocBuilder<TasksCubit, List<TaskModel>>(
+                builder: (context, state) {
+                  return GestureDetector(
+                    onTap: () {
+                      context.read<TasksCubit>().deleteTask(task.id);
+                    },
+                    child: Icon(Icons.delete, size: 22, color: Colors.white24),
+                  );
+                },
+              ),
+            ],
           ),
 
           // -------------------------

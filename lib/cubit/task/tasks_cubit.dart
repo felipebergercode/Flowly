@@ -21,6 +21,21 @@ class TasksCubit extends HydratedCubit<List<TaskModel>> {
     emit(updatedTasks);
   }
 
+  void deleteTask(String taskId) {
+    final updatedTasks = state.where((task) {
+      return task.id != taskId;
+    }).toList();
+
+    emit(updatedTasks);
+  }
+
+  void deleteTaskFromBoard(String boardId) {
+    final updatedTasks = state.where((task) {
+      return task.boardId != boardId;
+    }).toList();
+    emit(updatedTasks);
+  }
+
   @override
   Map<String, dynamic> toJson(List<TaskModel> state) {
     return {'tasks': state.map((task) => task.toJson()).toList()};
