@@ -55,6 +55,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
+          // =====================================================
+          //CALENDAR FEAT
+          // =====================================================
           child: BlocBuilder<TasksCubit, List<TaskModel>>(
             builder: (context, tasks) {
               final selectedTasks = tasks.where((task) {
@@ -151,6 +154,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
                   const SizedBox(height: 25),
 
+                  // =====================================================
+                  // BELOW CONTAINERS (BOARD EMPTY)
+                  // =====================================================
                   BlocBuilder<BoardsCubit, BoardsState>(
                     builder: (context, boardState) {
                       if (boardState.boards.isEmpty) {
@@ -198,6 +204,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           ),
                         );
                       }
+                      // =====================================================
+                      //BOARD EMPTY
+                      // =====================================================
 
                       if (tasks.isEmpty) {
                         return GestureDetector(
@@ -292,6 +301,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         final board = boards.firstWhere(
                           (board) => board.id == task.boardId,
                         );
+
+                        // =====================================================
+                        //TASK CARDS
+                        // =====================================================
 
                         return Container(
                           width: double.infinity,

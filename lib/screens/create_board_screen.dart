@@ -47,8 +47,9 @@ class _CreateBoardScreenState extends State<CreateBoardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 12),
-
+                    // =====================================================
                     // HEADER
+                    // =====================================================
                     Row(
                       children: [
                         GestureDetector(
@@ -76,8 +77,9 @@ class _CreateBoardScreenState extends State<CreateBoardScreen> {
                     ),
 
                     const SizedBox(height: 40),
-
+                    // =====================================================
                     // ICON SELECTOR
+                    // =====================================================
                     Center(
                       child: Column(
                         children: [
@@ -116,8 +118,9 @@ class _CreateBoardScreenState extends State<CreateBoardScreen> {
                     ),
 
                     const SizedBox(height: 32),
-
+                    // =====================================================
                     // BOARD NAME
+                    // =====================================================
                     const Text(
                       'Board name',
                       style: TextStyle(
@@ -164,8 +167,9 @@ class _CreateBoardScreenState extends State<CreateBoardScreen> {
                     ),
 
                     const SizedBox(height: 24),
-
+                    // =====================================================
                     // COLOR TITLE
+                    // =====================================================
                     const Text(
                       'Choose color',
                       style: TextStyle(
@@ -176,8 +180,9 @@ class _CreateBoardScreenState extends State<CreateBoardScreen> {
                     ),
 
                     const SizedBox(height: 14),
-
+                    // =====================================================
                     // COLORS
+                    // =====================================================
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(boardColors.length, (index) {
@@ -239,8 +244,9 @@ class _CreateBoardScreenState extends State<CreateBoardScreen> {
                 ),
               ),
             ),
-
+            // =====================================================
             // CREATE BOARD BUTTON
+            // =====================================================
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
               child: SizedBox(
@@ -365,7 +371,9 @@ class _CreateBoardScreenState extends State<CreateBoardScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Barrita superior
+              // =====================================================
+              // TOP CARD
+              // =====================================================
               Container(
                 width: 40,
                 height: 4,

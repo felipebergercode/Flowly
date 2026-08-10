@@ -34,8 +34,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-
+      // =====================================================
       // ADD TASK BUTTON
+      // =====================================================
       floatingActionButton: BlocBuilder<BoardsCubit, BoardsState>(
         builder: (context, state) {
           if (state.boards.isEmpty) {
@@ -52,11 +53,13 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
       ),
-
+      // =====================================================
       // SCREENS
+      // =====================================================
       body: IndexedStack(index: _currentIndex, children: screens),
-
+      // =====================================================
       // BOTTOM NAVIGATION
+      // =====================================================
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
@@ -108,8 +111,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
+// =====================================================
 // HOME CONTENT
+// =====================================================
 
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
@@ -128,7 +132,9 @@ class HomeContent extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Ggood morning
+              // =====================================================
+              // GOOD MORNING
+              // =====================================================
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -186,8 +192,9 @@ class HomeContent extends StatelessWidget {
               ),
 
               const SizedBox(height: 20),
-
+              // =====================================================
               // BOARDS
+              // =====================================================
               BlocBuilder<BoardsCubit, BoardsState>(
                 builder: (context, state) {
                   if (state.boards.isNotEmpty) {
@@ -430,8 +437,9 @@ class HomeContent extends StatelessWidget {
     );
   }
 }
-
+// =====================================================
 // BOARD CONTAINER
+// =====================================================
 
 class BoardContainer extends StatelessWidget {
   final String name;
@@ -512,8 +520,9 @@ class BoardContainer extends StatelessWidget {
     );
   }
 }
-
+// =====================================================
 // NEW BOARD CONTAINER
+// =====================================================
 
 class ContainerNewBoard extends StatelessWidget {
   const ContainerNewBoard({super.key});

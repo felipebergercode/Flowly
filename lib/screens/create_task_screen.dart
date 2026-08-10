@@ -75,7 +75,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     );
   }
 
+  // =====================================================
   // FUNCION PARA ELEGIR FECHA
+  // =====================================================
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -119,7 +121,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // =====================================================
                 // HEADER
+                // =====================================================
                 Row(
                   children: [
                     GestureDetector(
@@ -146,7 +150,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                   ],
                 ),
                 SizedBox(height: 30),
+                // =====================================================
                 //TITLE AND TEXTFIELD
+                // =====================================================
                 Text(
                   'Title',
                   style: TextStyle(
@@ -203,7 +209,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                   ],
                 ),
                 SizedBox(height: 20),
+                // =====================================================
                 //DESCRIPTION AND TEXTFIELD
+                // =====================================================
                 Text(
                   'Description',
                   style: TextStyle(
@@ -241,7 +249,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                   ],
                 ),
                 SizedBox(height: 20),
+                // =====================================================
                 //BOARD AND SELECT BOARD
+                // =====================================================
                 Text(
                   'Board',
                   style: TextStyle(
@@ -308,7 +318,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                   },
                 ),
                 SizedBox(height: 20),
+                // =====================================================
                 //PRIORITY CHOOSE
+                // =====================================================
                 BlocBuilder<PriorityCubit, Priority>(
                   builder: (context, state) {
                     return PriorityContainers(
@@ -318,7 +330,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                   },
                 ),
                 SizedBox(height: 20),
+                // =====================================================
                 //DUE DATE
+                // =====================================================
                 Text(
                   'Due date',
                   style: TextStyle(
@@ -384,7 +398,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                   ],
                 ),
                 Spacer(),
+                // =====================================================
                 // CREATE TASK BUTTON
+                // =====================================================
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
                   child: SizedBox(
